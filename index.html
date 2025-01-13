@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app-container" class="sunny-bg">
+        <header>
+            <h1>Weather Application</h1>
+            <p>Search your city to see the current weather.</p>
+        </header>
+        <div class="search-container">
+            <input type="text" id="city-input" placeholder="Enter city...">
+            <button id="search-btn">Search</button>
+        </div>
+        <main>
+            <div class="weather-display">
+                <h2 id="city-name">Tirana</h2>
+                <h3 id="temperature">15°C</h3>
+                <p id="weather-description">Sunny with clouds</p>
+                <img id="weather-icon" src="weatherlogo.png" alt="Weather Icon">
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 Weather Application. Designed with 💡.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
