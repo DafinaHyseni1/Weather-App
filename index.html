@@ -1,33 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Application</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Weather App</title>
+
     <link rel="stylesheet" href="styles.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
 </head>
-<body>
-    <div id="app-container" class="sunny-bg">
-        <header>
-            <h1>Weather Application</h1>
-            <p>Search your city to see the current weather.</p>
-        </header>
-        <div class="search-container">
-            <input type="text" id="city-input" placeholder="Enter city...">
-            <button id="search-btn">Search</button>
-        </div>
-        <main>
-            <div class="weather-display">
-                <h2 id="city-name">Tirana</h2>
-                <h3 id="temperature">15°C</h3>
-                <p id="weather-description">Sunny with clouds</p>
-                <img id="weather-icon" src="weatherlogo.png" alt="Weather Icon">
+<body class="clear">
+
+    <div class="overlay"></div>
+
+    <div class="weather-card">
+
+        <div class="top-section">
+
+            <div class="location-info">
+                <h1 id="city-name">London</h1>
+                <p id="date">Tuesday, May 20</p>
             </div>
-        </main>
-        <footer>
-            <p>&copy; 2024 Weather Application. Designed with 💡.</p>
-        </footer>
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="city-input"
+                    placeholder="Search city..."
+                >
+
+                <button id="search-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <div class="main-weather">
+
+            <div class="temperature-section">
+
+                <img
+                    id="weather-icon"
+                    src=""
+                    alt="Weather Icon"
+                >
+
+                <h2 id="temperature">21°C</h2>
+
+                <p id="weather-description">
+                    Clear Sky
+                </p>
+
+            </div>
+
+            <div class="weather-details">
+
+                <div class="detail-card">
+                    <span>Humidity</span>
+                    <h3 id="humidity">60%</h3>
+                </div>
+
+                <div class="detail-card">
+                    <span>Wind</span>
+                    <h3 id="wind">12 km/h</h3>
+                </div>
+
+                <div class="detail-card">
+                    <span>Feels Like</span>
+                    <h3 id="feels-like">19°C</h3>
+                </div>
+
+                <div class="detail-card">
+                    <span>Pressure</span>
+                    <h3 id="pressure">1012 hPa</h3>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="forecast-container" id="forecast-container">
+
+        </div>
+
     </div>
+
+    <div class="loader" id="loader"></div>
+
     <script src="script.js"></script>
+
 </body>
 </html>
