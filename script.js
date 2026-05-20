@@ -1,101 +1,190 @@
 const apiKey = "0e0a895b984cf05192352907a3c69de3";
-const searchBtn = document.getElementById("search-btn");
+
 const cityInput = document.getElementById("city-input");
-const appContainer = document.getElementById("app-container");
+const searchBtn = document.getElementById("search-btn");
+
 const cityName = document.getElementById("city-name");
 const temperature = document.getElementById("temperature");
 const weatherDescription = document.getElementById("weather-description");
 
-// Funksioni për të marrë të dhënat e motit
-async function fetchWeather(city) {
-    try {
+const humidity = document.getElementById("humidity");
+const wind = document.getElementById("wind");
+const feelsLike = document.getElementById("feels-like");
+const pressure = document.getElementById("pressure");
+
+const weatherIcon = document.getElementById("weather-icon");
+
+const forecastContainer = document.getElementById("forecast-container");
+
+const loader = document.getElementById("loader");
+
+
+async function fetchWeather(city){
+
+    try{
+
+        loader.style.display = "block";
+
         const response = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
         );
-        if (!response.ok) {
-            throw new Error("Qyteti nuk u gjet!");
+
+        if(!response.ok){
+            throw new Error("City not found");
         }
+
         const data = await response.json();
+
         updateWeather(data);
-    } catch (error) {
+
+        fetchForecast(city);
+
+    }catch(error){
+
         alert(error.message);
+
+    }finally{
+
+        loader.style.display = "none";
+
     }
+
 }
 
-// Funksioni për të përditësuar motin dhe sfondin
-function updateWeather(data) {
-    const temp = Math.round(data.main.temp);
-    const weather = data.weather[0].main.toLowerCase(); // Shembull: "clear", "rain", "clouds"
-    const weatherDesc = data.weather[0].description;
 
-    // Përditëso të dhënat e motit
+function updateWeather(data){
+
+    const weather = data.weather[0].main.toLowerCase();
+
     cityName.textContent = data.name;
-    temperature.textContent = `${temp}°C`;
-    weatherDescription.textContent = `${weatherDesc} ${getWeatherIcon(weather)}`; // Përfshi emoji
 
-    // Ndrysho sfondin sipas motit
-    appContainer.className = ""; // Fshi klasat ekzistuese
-    appContainer.classList.add(getBackgroundClass(weather));
+    temperature.textContent =
+    `${Math.round(data.main.temp)}°C`;
+
+    weatherDescription.textContent =
+    data.weather[0].description;
+
+    humidity.textContent =
+    `${data.main.humidity}%`;
+
+    wind.textContent =
+    `${data.wind.speed} km/h`;
+
+    feelsLike.textContent =
+    `${Math.round(data.main.feels_like)}°C`;
+
+    pressure.textContent =
+    `${data.main.pressure} hPa`;
+
+    const iconCode = data.weather[0].icon;
+
+    weatherIcon.src =
+    `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+
+    document.body.className = weather;
+
 }
 
-// Funksioni për të marrë ikonën e motit
-function getWeatherIcon(weather) {
-    const icons = {
-        clear: "🌞", // Diell
-        rain: "🌧️", // Shi
-        clouds: "☁️", // Re
-        snow: "❄️", // Borë
-        thunderstorm: "🌩️", // Stuhia
-        drizzle: "🌦️", // Pika shiu
-        mist: "🌫️", // Mjegull
-        haze: "🌫️", // Haze
-        smoke: "💨", // Tym
-        dust: "🌪️", // Pluhur
-        fog: "🌫️", // Mjegull e dendur
-        default: "❓", // Gjendje e panjohur
-    };
-    return icons[weather] || icons.default;
+
+async function fetchForecast(city){
+
+    const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`
+    );
+
+    const data = await response.json();
+
+    displayForecast(data);
+
 }
 
-// Funksioni për të marrë klasën e sfondit sipas motit
-function getBackgroundClass(weather) {
-    const backgrounds = {
-        clear: "sunny-bg",
-        rain: "rainy-bg",
-        clouds: "cloudy-bg",
-        snow: "snowy-bg",
-        thunderstorm: "stormy-bg",
-        drizzle: "rainy-bg",
-        mist: "cloudy-bg",
-        haze: "cloudy-bg",
-        smoke: "default-bg",
-        dust: "default-bg",
-        fog: "cloudy-bg",
-    };
-    return backgrounds[weather] || "default-bg";
+
+function displayForecast(data){
+
+    forecastContainer.innerHTML = "";
+
+    const dailyData = data.list.filter(item =>
+        item.dt_txt.includes("12:00:00")
+    );
+
+    dailyData.slice(0,5).forEach(day => {
+
+        const date = new Date(day.dt_txt);
+
+        const dayName =
+        date.toLocaleDateString("en-US", {
+            weekday:"short"
+        });
+
+        const icon =
+        day.weather[0].icon;
+
+        const temp =
+        Math.round(day.main.temp);
+
+        forecastContainer.innerHTML += `
+
+            <div class="forecast-card">
+
+                <h3>${dayName}</h3>
+
+                <img
+                    src="https://openweathermap.org/img/wn/${icon}@2x.png"
+                >
+
+                <p>${temp}°C</p>
+
+            </div>
+
+        `;
+
+    });
+
 }
 
-// Event Listener për butonin
-searchBtn.addEventListener("click", () => {
+
+searchBtn.addEventListener("click", ()=>{
+
     const city = cityInput.value.trim();
-    if (city) {
+
+    if(city){
+
         fetchWeather(city);
-        cityInput.value = ""; // Pastron input-in pas kërkimit
-    } else {
-        alert("Ju lutemi shkruani emrin e një qyteti!");
+
+        cityInput.value = "";
+
     }
+
 });
 
-// Opsionale: Kërkimi me tastin Enter
-cityInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
+
+cityInput.addEventListener("keydown",(e)=>{
+
+    if(e.key === "Enter"){
+
         const city = cityInput.value.trim();
-        if (city) {
+
+        if(city){
+
             fetchWeather(city);
-            cityInput.value = ""; // Pastron input-in pas kërkimit
-        } else {
-            alert("Ju lutemi shkruani emrin e një qyteti!");
+
+            cityInput.value = "";
+
         }
+
     }
+
 });
 
+
+const today = new Date();
+
+document.getElementById("date").textContent =
+today.toLocaleDateString("en-US",{
+    weekday:"long",
+    month:"long",
+    day:"numeric"
+});
+
+
+fetchWeather("London");
